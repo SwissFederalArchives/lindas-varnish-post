@@ -11,6 +11,11 @@ jobs:
   docker:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
     env:
       DOCKER_IMAGE: ghcr.io/swissfederalarchives/lindas-varnish-post
 
