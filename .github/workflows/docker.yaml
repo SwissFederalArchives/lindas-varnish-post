@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_IMAGE: ghcr.io/zazuko/varnish-post
+      DOCKER_IMAGE: ghcr.io/swissfederalarchives/lindas-varnish-post
 
     steps:
       - name: Checkout
