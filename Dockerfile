@@ -47,7 +47,8 @@ COPY --from=prometheus_varnish_exporter \
 WORKDIR /etc/varnish
 COPY config/ /templates
 COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+# Convert line endings from Windows CRLF to Unix LF and set executable
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 EXPOSE 80 8443 9131
 CMD [ "tini", "--", "/entrypoint.sh" ]

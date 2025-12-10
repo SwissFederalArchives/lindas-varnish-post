@@ -1,4 +1,5 @@
 #!/bin/sh
+# Force rebuild - fixed line endings
 
 ENABLE_LOGS="${ENABLE_LOGS}"
 ENABLE_PROMETHEUS_EXPORTER="${ENABLE_PROMETHEUS_EXPORTER}"
