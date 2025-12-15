@@ -1,4 +1,35 @@
-# varnish-post
+# lindas-varnish-post Changelog
+
+**Repository:** SwissFederalArchives/lindas-varnish-post
+**Description:** Varnish cache with POST request support for SPARQL endpoints
+
+---
+
+## LINDAS Development (December 2025)
+
+### 2025-12-10
+
+**`2623e56` - Fix security vulnerability and Windows line ending issues**
+- Fixed security vulnerabilities in dependencies
+- Fixed Windows line ending issues for cross-platform compatibility
+
+### 2025-10-17
+
+**`ddbcf6e` - Add GitHub Actions build cache to Docker workflow**
+- Added build caching for faster CI builds
+
+**`50f05e0` - Add explicit permissions to Docker workflow for GHCR push**
+- Fixed GitHub Container Registry permissions
+
+**`c022583` - Fix Docker workflow trigger to build on main branch pushes**
+- Fixed workflow trigger conditions
+
+**`0b5a03e` - Fix Docker image registry name in GitHub Actions workflow**
+- Fixed registry naming for LINDAS organization
+
+---
+
+## Original Releases
 
 ## 2.8.0
 
@@ -68,3 +99,7 @@
 ### Major Changes
 
 - 6f6ea26: Changed base from Alpine to Ubuntu.
+
+---
+
+*Last updated: 2025-12-15*
