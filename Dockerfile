@@ -11,6 +11,39 @@ RUN git config --global advice.detachedHead false \
   && go mod download \
   && go build -o prometheus_varnish_exporter
 
+# Build varnish-modules from source (bodyaccess + xkey VMODs)
+# These are not available in the official Varnish packagecloud repo
+FROM docker.io/library/ubuntu:24.04 AS varnish_modules_builder
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  curl \
+  gnupg \
+  ca-certificates \
+  apt-transport-https \
+  lsb-release \
+  && curl -s -o /tmp/varnish-repo.sh https://packagecloud.io/install/repositories/varnishcache/varnish76/script.deb.sh \
+  && bash /tmp/varnish-repo.sh \
+  && rm /tmp/varnish-repo.sh \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+  varnish \
+  varnish-dev \
+  automake \
+  autotools-dev \
+  libtool \
+  make \
+  gcc \
+  git \
+  pkg-config \
+  python3-docutils \
+  && git clone --branch 7.6 --depth 1 https://github.com/varnish/varnish-modules.git /tmp/varnish-modules \
+  && cd /tmp/varnish-modules \
+  && ./bootstrap \
+  && ./configure \
+  && make \
+  && make install
+
 # Build the final image
 FROM docker.io/library/ubuntu:24.04
 
@@ -29,14 +62,29 @@ ENV ENABLE_PROMETHEUS_EXPORTER="false"
 ENV PURGE_ACL="localhost"
 ENV CUSTOM_ARGS=""
 
-# Install some dependencies
+# Install Varnish 7.6 from official packagecloud repository
+# Ubuntu repos ship Varnish 7.1 which is EOL (no upstream security patches)
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install -y --no-install-recommends \
   gettext \
   tini \
-  varnish \
-  varnish-modules \
-  && apt-get clean
+  curl \
+  gnupg \
+  ca-certificates \
+  apt-transport-https \
+  lsb-release \
+  && curl -s -o /tmp/varnish-repo.sh https://packagecloud.io/install/repositories/varnishcache/varnish76/script.deb.sh \
+  && bash /tmp/varnish-repo.sh \
+  && rm /tmp/varnish-repo.sh \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends varnish \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Copy compiled varnish-modules (bodyaccess, xkey, etc.) from builder stage
+COPY --from=varnish_modules_builder \
+  /usr/lib/varnish/vmods/ \
+  /usr/lib/varnish/vmods/
 
 # Get the prometheus_varnish_exporter binary
 COPY --from=prometheus_varnish_exporter \
