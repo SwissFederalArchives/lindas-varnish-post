@@ -1,5 +1,13 @@
 # varnish-post
 
+## 2.9.0
+
+### Minor Changes
+
+- Upgrade Varnish from 7.1 (Ubuntu repos, EOL) to 7.6 (official packagecloud repo) for continued security patch support
+- Compile varnish-modules (bodyaccess, xkey) from source for Varnish 7.6 compatibility
+- Clean up build dependencies from final image to keep image size minimal
+
 ## 2.8.0
 
 ### Minor Changes
