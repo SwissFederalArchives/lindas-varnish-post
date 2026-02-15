@@ -8,6 +8,10 @@
 - Add clarification that this project is maintained by Swiss Federal Archives as part of the LINDAS project
 - Update README with project origin information (forked from Zazuko varnish-post)
 - Add timestamp-based Docker tags (`main-YYYYMMDD-HHmmss`) for Flux image automation on TEST
+- Add promotion workflow (`promote.yaml`) for INT/PROD via `workflow_dispatch`
+  - Takes a `source_tag` input (the TEST image tag to promote)
+  - Retags the existing image (no rebuild) as `int_YYYY-MM-DD_HHMMSS` and `prod_YYYY-MM-DD_HHMMSS`
+  - Uses `docker buildx imagetools create` for zero-layer-pull retagging
 
 ## 2.9.0
 
