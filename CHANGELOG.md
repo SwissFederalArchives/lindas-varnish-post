@@ -1,5 +1,14 @@
 # varnish-post
 
+## Unreleased
+
+### Minor Changes
+
+- Update Docker image registry from zazuko to swissfederalarchives/lindas-varnish-post
+- Add clarification that this project is maintained by Swiss Federal Archives as part of the LINDAS project
+- Update README with project origin information (forked from Zazuko varnish-post)
+- Add timestamp-based Docker tags (`main-YYYYMMDD-HHmmss`) for Flux image automation on TEST
+
 ## 2.9.0
 
 ### Minor Changes

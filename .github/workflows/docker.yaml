@@ -47,6 +47,7 @@ jobs:
             type=semver,prefix=v,pattern={{major}}.{{minor}}
             type=semver,prefix=v,pattern={{major}}
             type=sha
+            type=raw,value=main-{{date 'YYYYMMDD-HHmmss'}},enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Docker images
         id: docker_build
