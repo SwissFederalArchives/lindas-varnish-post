@@ -14,7 +14,7 @@ on:
           - rollback-prod
         default: promote
       source_tag:
-        description: "Source image tag (e.g., main-20260215-143022)"
+        description: "Source image tag (e.g., test_2026-02-15_143022)"
         required: true
         type: string
 
@@ -89,7 +89,7 @@ jobs:
 
       - name: Create TEST rollback tag
         id: docker_tag
-        run: echo "tag=main-$(date '+%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+        run: echo "tag=test_$(date '+%Y-%m-%d_%H%M%S')" >> "$GITHUB_OUTPUT"
 
       - name: Retag image for TEST
         run: |

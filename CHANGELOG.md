@@ -7,7 +7,8 @@
 - Update Docker image registry from zazuko to swissfederalarchives/lindas-varnish-post
 - Add clarification that this project is maintained by Swiss Federal Archives as part of the LINDAS project
 - Update README with project origin information (forked from Zazuko varnish-post)
-- Add timestamp-based Docker tags (`main-YYYYMMDD-HHmmss`) for Flux image automation on TEST
+- Standardize Docker image tag naming: changed from `main-YYYYMMDD-HHmmss` to `test_YYYY-MM-DD_HHmmss`
+- Updated promote/rollback workflow to use `test_*` tags for TEST rollback
 - Add promote/rollback workflow (`promote.yaml`) via `workflow_dispatch`
   - Action dropdown: promote, rollback-test, rollback-int, rollback-prod
   - Promote: retags source image as `int_YYYY-MM-DD_HHMMSS` then `prod_YYYY-MM-DD_HHMMSS`
