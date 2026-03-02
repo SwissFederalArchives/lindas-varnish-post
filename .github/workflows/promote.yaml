@@ -8,13 +8,14 @@ on:
         required: true
         type: choice
         options:
-          - promote
+          - promote-to-int
+          - promote-to-prod
           - rollback-test
           - rollback-int
           - rollback-prod
-        default: promote
+        default: promote-to-int
       source_tag:
-        description: "Source image tag (e.g., test_2026-02-15_143022)"
+        description: "Full source image tag (e.g., test_2026-02-17_112056 for promote-to-int, int_2026-02-23_091442 for promote-to-prod, or any env tag for rollback)"
         required: true
         type: string
 
@@ -22,9 +23,8 @@ env:
   IMAGE: ghcr.io/swissfederalarchives/lindas-varnish-post
 
 jobs:
-  # Promote to INT (retag source image as int_*, no rebuild)
-  move-to-int:
-    if: github.ref == 'refs/heads/main' && inputs.action == 'promote'
+  promote-to-int:
+    if: github.ref == 'refs/heads/main' && inputs.action == 'promote-to-int'
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
@@ -48,10 +48,8 @@ jobs:
             --tag ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }} \
             ${{ env.IMAGE }}:${{ inputs.source_tag }}
 
-  # Promote to PROD (retag source image as prod_*, no rebuild)
-  move-to-prod:
-    if: github.ref == 'refs/heads/main' && inputs.action == 'promote'
-    needs: move-to-int
+  promote-to-prod:
+    if: github.ref == 'refs/heads/main' && inputs.action == 'promote-to-prod'
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
@@ -75,7 +73,6 @@ jobs:
             --tag ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }} \
             ${{ env.IMAGE }}:${{ inputs.source_tag }}
 
-  # Rollback TEST to a previous image
   rollback-test:
     if: github.ref == 'refs/heads/main' && inputs.action == 'rollback-test'
     runs-on: ubuntu-latest
@@ -96,12 +93,11 @@ jobs:
 
       - name: Retag image for TEST
         run: |
-          echo "Rolling back TEST to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
+          echo "Rolling back to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
           docker buildx imagetools create \
             --tag ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }} \
             ${{ env.IMAGE }}:${{ inputs.source_tag }}
 
-  # Rollback INT to a previous image
   rollback-int:
     if: github.ref == 'refs/heads/main' && inputs.action == 'rollback-int'
     runs-on: ubuntu-latest
@@ -122,12 +118,11 @@ jobs:
 
       - name: Retag image for INT
         run: |
-          echo "Rolling back INT to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
+          echo "Rolling back to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
           docker buildx imagetools create \
             --tag ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }} \
             ${{ env.IMAGE }}:${{ inputs.source_tag }}
 
-  # Rollback PROD to a previous image
   rollback-prod:
     if: github.ref == 'refs/heads/main' && inputs.action == 'rollback-prod'
     runs-on: ubuntu-latest
@@ -148,7 +143,7 @@ jobs:
 
       - name: Retag image for PROD
         run: |
-          echo "Rolling back PROD to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
+          echo "Rolling back to ${{ inputs.source_tag }} as ${{ steps.docker_tag.outputs.tag }}"
           docker buildx imagetools create \
             --tag ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }} \
             ${{ env.IMAGE }}:${{ inputs.source_tag }}
